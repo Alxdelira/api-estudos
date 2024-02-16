@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "swagger": "node swagger-setup.js"
+    "vercel-build": "node swagger-setup.js"
   },
   "author": "Alexandre Nogueira",
   "license": "ISC",
