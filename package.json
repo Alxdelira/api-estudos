@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "vercel-build": "node swagger-setup.js"
+    "install-swagger": "npm install swagger-ui-express swagger-jsdoc"
   },
   "author": "Alexandre Nogueira",
   "license": "ISC",
