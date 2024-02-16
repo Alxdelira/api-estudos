@@ -16,7 +16,7 @@ const  swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.PORT}/`,
+        url: `https://api-estudos.vercel.app/`,
         description: 'Api para Estudos ',
       },
     ],
