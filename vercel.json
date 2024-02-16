@@ -2,18 +2,8 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js", 
-      "use": "@vercel/node",
-      "config": {
-        "build": {
-          "env": {
-            "CI": "true"
-          },
-          "scripts": {
-            "postinstall": "npm run install-swagger"
-          }
-        }
-      }
+      "src": "server.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [{ "src": "(.*)", "dest": "server.js" }]
