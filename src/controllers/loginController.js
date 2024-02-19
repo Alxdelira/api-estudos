@@ -18,7 +18,7 @@ export default class LoginController {
       if (!secret) {
         return res.status(500).json({ message: 'Segredo não definido!' });
       }
-      const token = jwt.sign({ id: usuario._id, nome: usuario.nome, email: usuario.email }, secret, {
+      const token = jwt.sign({ id: usuario._id, nome: usuario.nome, email: usuario.email, foto: usuario.foto }, secret, {
         expiresIn: '1h'
       });
 

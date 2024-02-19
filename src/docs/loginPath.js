@@ -36,7 +36,8 @@ const loginPath = {
                                         type: "object",
                                         properties: {
                                             nome: { type: "string" },
-                                            email: { type: "string" }
+                                            email: { type: "string" },
+                                            foto: { type: "string" }
                                         }
                                     }
                                 }

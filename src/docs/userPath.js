@@ -14,6 +14,7 @@ const userPath = {
                                 nome: { type: "string" },
                                 email: { type: "string" },
                                 senha: { type: "string" },
+                                foto: { type: "string" }
                             },
                             required: ["nome", "email", "senha"]
                         }
