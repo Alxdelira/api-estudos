@@ -19,6 +19,10 @@ const  swaggerOptions = {
         url: `https://api-estudos.vercel.app/`,
         description: 'Api para Estudos ',
       },
+      {
+        url: `http://localhost:3030/`,
+        description: 'Api para Estudos - Local ',
+      },
     ],
     components: {
       securitySchemes: {

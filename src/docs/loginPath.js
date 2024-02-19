@@ -31,7 +31,14 @@ const loginPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    token: { type: "string" }
+                                    token: { type: "string" },
+                                    usuario: {
+                                        type: "object",
+                                        properties: {
+                                            nome: { type: "string" },
+                                            email: { type: "string" }
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -1,5 +1,8 @@
 import usuarios from "./usuarioRouter.js"
 import login from "./loginRouter.js"
+import uploads from "./imageRouter.js"
+
+
 const routes = (app) => {
     app.route("/").get((req, res) => {
         res.status(200).redirect("/docs")
@@ -7,7 +10,8 @@ const routes = (app) => {
 
     app.use(
         usuarios,
-        login
+        login, 
+        uploads
     );
 };
 

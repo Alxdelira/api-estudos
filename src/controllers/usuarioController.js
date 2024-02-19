@@ -4,16 +4,16 @@ import bcrypt from 'bcrypt';
 export default class usuarioController {
   static async criarUsuario(req, res) {
     try {
-      const { nome, email, senha } = req.body;
+      const { nome, email, senha, foto } = req.body;
       const novoUsuario = new UsuarioModel({
         nome,
         email,
+        foto,
         senha
       });
       if (!nome || !email || !senha) {
         return res.status(400).json({ error: 400, message: 'Dados Obrigatórios Faltando!' });
       }
-      // eslint-disable-next-line prefer-const
       let senhaHash = await bcrypt.hash(senha, 8);
       novoUsuario.senha = senhaHash;
       await novoUsuario.save();

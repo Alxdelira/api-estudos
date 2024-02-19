@@ -11,6 +11,10 @@ const UsuarioSchema =  new mongoose.Schema(
       type: String,
       required: true,
     },
+    foto: {
+      type: String,
+      required: false,
+    },
     senha: {
       type: String,
       required: true,

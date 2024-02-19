@@ -13,18 +13,19 @@ export default class LoginController {
       const usuario = await UsuarioModel.findOne({ email }).select('+senha');
 
       if (!usuario) {
-        return res.status(404).json({ message: 'Usuario não encontrado!' });
+        return res.status(404).json({ message: 'Usuário não encontrado!' });
       }
       if (!secret) {
         return res.status(500).json({ message: 'Segredo não definido!' });
       }
-      const token = jwt.sign({ id: usuario._id }, secret, {
+      const token = jwt.sign({ id: usuario._id, nome: usuario.nome, email: usuario.email }, secret, {
         expiresIn: '1h'
       });
+
       if (!await bcrypt.compare(senha, usuario.senha)) {
-        return res.status(400).json({ message: 'Usuario ou senha invalida!' });
+        return res.status(400).json({ message: 'Usuário ou senha inválida!' });
       }
-      res.status(200).json({ token });
+      res.status(200).json({ token, usuario: { nome: usuario.nome, email: usuario.email } });
     } catch (error) {
       res.status(500).json({message: 'Erro Interno no Servidor!'});
     }
