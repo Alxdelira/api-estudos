@@ -30,7 +30,7 @@ const userPath = {
                                 type: "object",
                                 properties: {
                                     message: { type: "string" },
-                                    novoUsuario: { type: "object" } 
+                                    novoUsuario: { type: "object" }
                                 }
                             }
                         }
@@ -76,9 +76,9 @@ const userPath = {
                     content: {
                         "application/json": {
                             schema: {
-                                type: "object", 
+                                type: "object",
                                 properties: {
-                                    docs: { type: "array" }, 
+                                    docs: { type: "array" },
                                     totalDocs: { type: "number" },
                                     totalPages: { type: "number" },
                                     page: { type: "number" },
@@ -143,7 +143,14 @@ const userPath = {
                     content: {
                         "application/json": {
                             schema: {
-                                type: "object" // Especifique o schema do objeto retornado pelo endpoint
+                                type: "object",
+                                properties: {
+                                    _id: { type: "string" },
+                                    nome: { type: "string" },
+                                    email: { type: "string" },
+                                    senha: { type: "string" },
+                                    foto: { type: "string" }
+                                }
                             }
                         }
                     }
@@ -198,123 +205,129 @@ const userPath = {
                 content: {
                     "application/json": {
                         schema: {
-                            type: "object", // Especifique o schema do objeto enviado no corpo da requisição
+                            type: "object",
+                            properties: {
+                                nome: { type: "string" },
+                                email: { type: "string" },
+                                senha: { type: "string" },
+                                foto: { type: "string" }
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: "Usuário atualizado com sucesso",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        message: { type: "string" },
+                                        usuarioAtualizado: { type: "object" }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    400: {
+                        description: "Dados obrigatórios faltando ou inválidos",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        error: { type: "number" },
+                                        message: { type: "string" }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    404: {
+                        description: "Usuário não encontrado",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        error: { type: "number" },
+                                        message: { type: "string" }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    500: {
+                        description: "Erro interno no servidor",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        error: { type: "number" },
+                                        message: { type: "string" }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             },
-            responses: {
-                200: {
-                    description: "Usuário atualizado com sucesso",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    message: { type: "string" },
-                                    usuarioAtualizado: { type: "object" } 
+            delete: {
+                tags: ["Usuarios"],
+                summary: "Deleta um usuário por ID",
+                description: "Deleta um usuário específico com base em seu ID",
+                parameters: [
+                    {
+                        name: "id",
+                        in: "path",
+                        description: "ID do usuário a ser deletado",
+                        required: true,
+                        schema: {
+                            type: "string"
+                        }
+                    }
+                ],
+                responses: {
+                    200: {
+                        description: "Usuário deletado com sucesso",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        message: { type: "string" },
+                                        usuarioDeletado: { type: "object" }
+                                    }
                                 }
                             }
                         }
-                    }
-                },
-                400: {
-                    description: "Dados obrigatórios faltando ou inválidos",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
+                    },
+                    404: {
+                        description: "Usuário não encontrado",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        error: { type: "number" },
+                                        message: { type: "string" }
+                                    }
                                 }
                             }
                         }
-                    }
-                },
-                404: {
-                    description: "Usuário não encontrado",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
-                                }
-                            }
-                        }
-                    }
-                },
-                500: {
-                    description: "Erro interno no servidor",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        delete: {
-            tags: ["Usuarios"],
-            summary: "Deleta um usuário por ID",
-            description: "Deleta um usuário específico com base em seu ID",
-            parameters: [
-                {
-                    name: "id",
-                    in: "path",
-                    description: "ID do usuário a ser deletado",
-                    required: true,
-                    schema: {
-                        type: "string"
-                    }
-                }
-            ],
-            responses: {
-                200: {
-                    description: "Usuário deletado com sucesso",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    message: { type: "string" },
-                                    usuarioDeletado: { type: "object" } 
-                                }
-                            }
-                        }
-                    }
-                },
-                404: {
-                    description: "Usuário não encontrado",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
-                                }
-                            }
-                        }
-                    }
-                },
-                500: {
-                    description: "Erro interno no servidor",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
+                    },
+                    500: {
+                        description: "Erro interno no servidor",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        error: { type: "number" },
+                                        message: { type: "string" }
+                                    }
                                 }
                             }
                         }
@@ -323,6 +336,5 @@ const userPath = {
             }
         }
     }
-};
-
+}
 export default userPath;
