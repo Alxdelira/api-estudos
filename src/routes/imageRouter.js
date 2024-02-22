@@ -9,5 +9,6 @@ router
     .post("/images/uploads",authMiddleware, upload.single("file"), ImagemController.uploadImage)
     .get("/images", ImagemController.findAllImage)
     .delete("/images/remover/:id", ImagemController.removeImage)
+    .get('/img', express.static('uploads'))
 
 export default router

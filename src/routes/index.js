@@ -8,7 +8,6 @@ const routes = (app) => {
     app.route("/").get((req, res) => {
         res.status(200).redirect("/docs")
     });
-    app.use("/img", express.static('uploads'))
 
     app.use(
         usuarios,
