@@ -13,7 +13,6 @@ const UsuarioSchema =  new mongoose.Schema(
     },
     foto: {
       type: String,
-      required: false,
     },
     senha: {
       type: String,

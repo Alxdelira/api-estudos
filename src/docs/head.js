@@ -1,5 +1,6 @@
 import userPath from './userPath.js';
 import loginPath from './loginPath.js';
+import imagePath from './imagePath.js';
 
 const  swaggerOptions = {
   swaggerDefinition: {
@@ -47,9 +48,13 @@ const  swaggerOptions = {
       {
         name: 'Usuarios',
         description: 'Operações para rota de Login',
+      },
+      {
+        name: 'Imagens',
+        description: 'Operações para rota de Imagens',
       }
     ],
-    paths: {...userPath, ...loginPath},
+    paths: {...userPath, ...loginPath,...imagePath},
   },
   apis: ['./src/router/*.js'],
 };

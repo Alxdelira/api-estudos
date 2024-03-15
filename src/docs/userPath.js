@@ -274,60 +274,61 @@ const userPath = {
                     }
                 }
             },
-            delete: {
-                tags: ["Usuarios"],
-                summary: "Deleta um usuário por ID",
-                description: "Deleta um usuário específico com base em seu ID",
-                parameters: [
-                    {
-                        name: "id",
-                        in: "path",
-                        description: "ID do usuário a ser deletado",
-                        required: true,
-                        schema: {
-                            type: "string"
+
+        },
+        delete: {
+            tags: ["Usuarios"],
+            summary: "Deleta um usuário por ID",
+            description: "Deleta um usuário específico com base em seu ID",
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    description: "ID do usuário a ser deletado",
+                    required: true,
+                    schema: {
+                        type: "string"
+                    }
+                }
+            ],
+            responses: {
+                200: {
+                    description: "Usuário deletado com sucesso",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    message: { type: "string" },
+                                    usuarioDeletado: { type: "object" }
+                                }
+                            }
                         }
                     }
-                ],
-                responses: {
-                    200: {
-                        description: "Usuário deletado com sucesso",
-                        content: {
-                            "application/json": {
-                                schema: {
-                                    type: "object",
-                                    properties: {
-                                        message: { type: "string" },
-                                        usuarioDeletado: { type: "object" }
-                                    }
+                },
+                404: {
+                    description: "Usuário não encontrado",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    error: { type: "number" },
+                                    message: { type: "string" }
                                 }
                             }
                         }
-                    },
-                    404: {
-                        description: "Usuário não encontrado",
-                        content: {
-                            "application/json": {
-                                schema: {
-                                    type: "object",
-                                    properties: {
-                                        error: { type: "number" },
-                                        message: { type: "string" }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    500: {
-                        description: "Erro interno no servidor",
-                        content: {
-                            "application/json": {
-                                schema: {
-                                    type: "object",
-                                    properties: {
-                                        error: { type: "number" },
-                                        message: { type: "string" }
-                                    }
+                    }
+                },
+                500: {
+                    description: "Erro interno no servidor",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    error: { type: "number" },
+                                    message: { type: "string" }
                                 }
                             }
                         }

@@ -1,67 +1,94 @@
-import Image from "../models/image.js";
 import fs from "fs";
+import ImagemModel from "../models/image.js";
 
-export default class ImagemController {
-    static uploadImage = async (req, res) => {
-        try {
-          const { nome } = req.body;
-          const file = req.file;
-    
-          const image = new Image({
-            nome,
-            src: file.path,
-          });
+class ImagensControllers {
+  
+  
+  static async enviarImagem(req, res, next) {
+  if (!req.file) {
+      return res.status(400).send({
+          codigo: 400,
+          mensagem: "Arquivo inválido",
+      });
+  }
 
-          if(!file){
-            return res.status(400).json({ error: true, code: 400, message: "Arquivo não enviado!" });
-          }
-    
-          await image.save();
-          res.status(200).json({ image, message: "Imagem salva com sucesso!" });
-        } catch (error) {
-          console.log(error);
-          return res
-            .status(500)
-            .json({ error: true, code: 500, message: "Erro interno no servidor" });
-        }
-    
-    }
+  const arquivo = req.file;
+  const usuarioId = req.usuario._id.id; 
 
+  
 
-    static findAllImage = async (req, res) => {
-        try {
-            const image = await Image.find();
-            res.json(image);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ error: true, code: 500, message: "Erro interno no servidor" });
-        }
-    }
+  if (!usuarioId) {
+      return res.status(401).send({
+          codigo: 401,
+          mensagem: "Usuário não autenticado",
+      });
+  }
 
+  const imagem = new ImagemModel({
+      id_imagem: arquivo.filename.split(".")[0],
+      tipo_arquivo: arquivo.filename.split(".")[1],
+      enviado_por: usuarioId, // Usa o ID do usuário em vez do objeto completo
+      caminho: "/imagens/" + arquivo.filename,
+  });
 
-    static removeImage = async (req, res) => {
-        try {
-            const { id } = req.params;
+  try {
+      await imagem.save();
 
-            // Busca o documento de imagem pelo ID
-            const image = await Image.findById(id);
-
-            // Verifica se a imagem foi encontrada
-            if (!image) {
-                return res.status(404).json({ error: true, code: 404, message: "Imagem não encontrada!" });
-            }
-
-            // Remove o documento de imagem do banco de dados
-            await image.deleteOne();
-
-            // Remove o arquivo físico da imagem do sistema de arquivos
-            fs.unlinkSync(image.src);
-
-            res.status(200).json({ message: "Imagem removida com Sucesso!" });
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ error: true, code: 500, message: "Erro interno no servidor" });
-        }
-    };
-
+      res.status(201).send({
+          codigo: 201,
+          mensagem: "Imagem enviada com sucesso",
+          dados: imagem,
+      });
+  } catch (error) {
+      console.error("Erro ao enviar imagem:", error);
+      return res.status(500).send({
+          codigo: 500,
+          mensagem: "Erro interno do servidor",
+      });
+  }
 }
+
+
+
+  static async mostrarImagem(req, res, next) {
+    const { id } = req.params;
+
+    const imagem = await ImagemModel.findOne({
+      id_imagem: id
+    });
+
+    if (!imagem) {
+      return res.status(404).send("Imagem não encontrada");
+    }
+
+    res.sendFile(imagem.caminho, { root: "." });
+  }
+
+  static async deletarImagem(req, res, next) {
+    const user = req.user;
+    const { id } = req.params;
+
+    const imagem = await ImagemModel.findOne({
+      id_imagem: id
+    });
+
+    if (!imagem) {
+      return res.status(404).send("Imagem não encontrada");
+    }
+
+    if (!user.adm && user.id != imagem.enviado_por) {
+      return res.status(403).send("Você não pode deletar essa imagem")
+    }
+
+    await imagem.deleteOne();
+
+    fs.unlink(
+      `imagens/${imagem.id_imagem}.${imagem.tipo_arquivo}`,
+      (err) => {}
+    );
+
+    res.send();
+  }
+}
+
+export default ImagensControllers;

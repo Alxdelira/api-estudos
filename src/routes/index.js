@@ -1,7 +1,7 @@
 import usuarios from "./usuarioRouter.js"
 import login from "./loginRouter.js"
-import uploads from "./imageRouter.js"
 import express from "express"
+import imagens from "./imageRouter.js";
 
 
 const routes = (app) => {
@@ -12,7 +12,7 @@ const routes = (app) => {
     app.use(
         usuarios,
         login, 
-        uploads
+        imagens
     );
 };
 
