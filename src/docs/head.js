@@ -1,6 +1,9 @@
 import userPath from './userPath.js';
 import loginPath from './loginPath.js';
 import imagePath from './imagePath.js';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const  swaggerOptions = {
   swaggerDefinition: {
@@ -8,21 +11,29 @@ const  swaggerOptions = {
     info: {
       title: 'API de  Estudos',
       description: 'Projeto feito para um testar login com outros aplicativos e projetos!',
-      version: '1.0.0',
+      version: '1.1.0',
       contact: {
         name: "Alexandre Nogueira",
         email: "alx.delira@gmail.com",
         url: "https://portfolioalxdelira.vercel.app/",
       },
+      license: {
+        name: "MIT",
+        url: "https://opensource.org/licenses/MIT",
+      },
     },
     servers: [
       {
-        url: `https://api-estudos.vercel.app/`,
-        description: 'Api para Estudos ',
+        url:'http://localhost:3030',
+        description: 'Api para Estudos - Local',
       },
       {
-        url: `http://localhost:3030/`,
-        description: 'Api para Estudos - Local ',
+        url: 'https://alexandre-3030.code.fslab.dev',
+        description: 'Api para Estudos - Code FsLab',
+      },
+      {
+        url: 'https://alexandre-3030.vercel.app',
+        description: 'Api para Estudos - Vercel',
       },
     ],
     components: {

@@ -45,18 +45,22 @@ const upload = multer({
     },
 });
 
+
+
+
+
 imagensRouter.use("/imagens", express.static("imagens"));
-imagensRouter
+
+imagensRouter 
     .route("/imagens")
-    .post(authMiddleware, createStorage, upload.single("image"), ImagensControllers.enviarImagem);
-
+    .post(authMiddleware,createStorage, upload.single("image"), ImagensControllers.enviarImagem)
+    .get(ImagensControllers.listarImagens);
 imagensRouter
     .route("/imagens/:id")
-    .delete(AuthMiddleware, ImagensControllers.deletarImagem);
-
+    .delete(authMiddleware, ImagensControllers.deletarImagem);
 imagensRouter
     .route("/imagens/:id")
-    .get(ImagensControllers.mostrarImagem);
+    .get(authMiddleware,ImagensControllers.mostrarImagem);
 
 export default imagensRouter;
 

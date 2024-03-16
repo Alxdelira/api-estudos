@@ -1,29 +1,45 @@
+import { get } from "mongoose";
 
 const imagePath = {
     "/imagens": {
         get: {
             tags: ["Imagens"],
-            summary: "Recupera uma imagem pelo caminho",
-            parameters: [
-                {
-                    name: "caminho",
-                    in: "path",
-                    required: true,
-                    description:
-                        "Caminho da imagem que vai ser exibida, incluindo a extensão da imagem",
-                    schema: {
-                        type: "string",
-                    },
-                },
-            ],
+            summary: "Lista todas as imagens",
             responses: {
                 200: {
                     description: "Sucesso",
                     content: {
-                        image: {
+                        "application/json": {
                             schema: {
-                                type: "string",
-                                format: "binary",
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        tipo_arquivo: {
+                                            type: "string",
+                                        },
+                                        enviado_por: {
+                                            type: "string",
+                                        },
+                                        caminho: {
+                                            type: "string",
+                                        },
+                                        id_imagem: {
+                                            type: "string",
+                                        },
+                                        criado_em: {
+                                            type: "string",
+                                            format: "date-time",
+                                        },
+                                        atualizado_em: {
+                                            type: "string",
+                                            format: "date-time",
+                                        },
+                                        _id: {
+                                            type: "string",
+                                        },
+                                    },
+                                },
                             },
                         },
                     },
@@ -34,14 +50,52 @@ const imagePath = {
                 403: {
                     description: "Proibido",
                 },
-                404: {
-                    description: "Não encontrado",
-                },
                 500: {
                     description: "Erro no servidor",
                 },
             },
         },
+        // get: {
+        //     tags: ["Imagens"],
+        //     summary: "Recupera uma imagem pelo caminho",
+        //     parameters: [
+        //         {
+        //             name: "caminho",
+        //             in: "path",
+        //             required: true,
+        //             description:
+        //                 "Caminho da imagem que vai ser exibida, incluindo a extensão da imagem",
+        //             schema: {
+        //                 type: "string",
+        //             },
+        //         },
+        //     ],
+        //     responses: {
+        //         200: {
+        //             description: "Sucesso",
+        //             content: {
+        //                 image: {
+        //                     schema: {
+        //                         type: "string",
+        //                         format: "binary",
+        //                     },
+        //                 },
+        //             },
+        //         },
+        //         401: {
+        //             description: "Não autorizado",
+        //         },
+        //         403: {
+        //             description: "Proibido",
+        //         },
+        //         404: {
+        //             description: "Não encontrado",
+        //         },
+        //         500: {
+        //             description: "Erro no servidor",
+        //         },
+        //     },
+        // },
         post: {
             tags: ["Imagens"],
             summary: "Envia uma imagem",
