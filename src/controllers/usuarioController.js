@@ -1,3 +1,4 @@
+import id from 'faker-br/lib/locales/id_ID/index.js';
 import UsuarioModel from '../models/usuario.js';
 import bcrypt from 'bcrypt';
 
@@ -13,6 +14,11 @@ export default class usuarioController {
       });
       if (!nome || !email || !senha) {
         return res.status(400).json({ error: 400, message: 'Dados Obrigatórios Faltando!' });
+      }
+      const usuarioExiste = await Usuario
+        .findOne({ email });
+      if (usuarioExiste) {
+        return res.status(400).json({ error: 400, message: 'Usuário Já Cadastrado!' });
       }
       let senhaHash = await bcrypt.hash(senha, 8);
       novoUsuario.senha = senhaHash;

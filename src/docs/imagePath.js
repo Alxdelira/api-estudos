@@ -1,4 +1,4 @@
-import { get } from "mongoose";
+// Arquivo responsável por documentar as rotas de imagens
 
 const imagePath = {
     "/imagens": {
@@ -55,47 +55,6 @@ const imagePath = {
                 },
             },
         },
-        // get: {
-        //     tags: ["Imagens"],
-        //     summary: "Recupera uma imagem pelo caminho",
-        //     parameters: [
-        //         {
-        //             name: "caminho",
-        //             in: "path",
-        //             required: true,
-        //             description:
-        //                 "Caminho da imagem que vai ser exibida, incluindo a extensão da imagem",
-        //             schema: {
-        //                 type: "string",
-        //             },
-        //         },
-        //     ],
-        //     responses: {
-        //         200: {
-        //             description: "Sucesso",
-        //             content: {
-        //                 image: {
-        //                     schema: {
-        //                         type: "string",
-        //                         format: "binary",
-        //                     },
-        //                 },
-        //             },
-        //         },
-        //         401: {
-        //             description: "Não autorizado",
-        //         },
-        //         403: {
-        //             description: "Proibido",
-        //         },
-        //         404: {
-        //             description: "Não encontrado",
-        //         },
-        //         500: {
-        //             description: "Erro no servidor",
-        //         },
-        //     },
-        // },
         post: {
             tags: ["Imagens"],
             summary: "Envia uma imagem",

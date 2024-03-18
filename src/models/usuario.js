@@ -12,7 +12,8 @@ const UsuarioSchema =  new mongoose.Schema(
       required: true,
     },
     foto: {
-      type: String,
+      type: mongoose.Types.ObjectId,
+      ref: "image",      
     },
     senha: {
       type: String,
