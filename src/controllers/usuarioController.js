@@ -15,8 +15,7 @@ export default class usuarioController {
       if (!nome || !email || !senha) {
         return res.status(400).json({ error: 400, message: 'Dados Obrigatórios Faltando!' });
       }
-      const usuarioExiste = await Usuario
-        .findOne({ email });
+      const usuarioExiste = await UsuarioModel.findOne({ email });
       if (usuarioExiste) {
         return res.status(400).json({ error: 400, message: 'Usuário Já Cadastrado!' });
       }

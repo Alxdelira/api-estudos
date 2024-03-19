@@ -28,7 +28,7 @@ const  swaggerOptions = {
         description: 'Api para Estudos - Local',
       },
       {
-        url: 'https://alexandre-3030.code.fslab.dev',
+        url: 'https://alexandre-3031.code.fslab.dev/',
         description: 'Api para Estudos - Code FsLab',
       },
       {
