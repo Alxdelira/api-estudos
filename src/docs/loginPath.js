@@ -3,7 +3,7 @@ const loginPath = {
         post: {
             tags: ["Login"],
             summary: "Realiza o login do usuário",
-            description: "Realiza o login do usuário com o email e senha fornecidos",
+            description: "Endpoint utilizado para autenticar um usuário com o email e senha fornecidos.",
             requestBody: {
                 required: true,
                 content: {
@@ -11,12 +11,8 @@ const loginPath = {
                         schema: {
                             type: "object",
                             properties: {
-                                email: { type: "string" },
-                                senha: { type: "string" },
-                            },
-                            example: { 
-                                email: "alx.delira@gmail.com",
-                                senha: "12345678"
+                                email: { type: "string", format: "email", example: "alx.delira@gmail.com" },
+                                senha: { type: "string", example: "12345678" },
                             },
                             required: ["email", "senha"]
                         }
@@ -31,13 +27,13 @@ const loginPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    token: { type: "string" },
+                                    token: { type: "string", example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFseC5kZWxpcmFAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.S9lZ1Zk7hB7h0OFKp6Dapwu4o3x_QSTgW4a5E8IdEWI" },
                                     usuario: {
                                         type: "object",
                                         properties: {
-                                            nome: { type: "string" },
-                                            email: { type: "string" },
-                                            foto: { type: "string" }
+                                            nome: { type: "string", example: "Alexandre Delira" },
+                                            email: { type: "string", format: "email", example: "alx.delira@gmail.com" },
+                                            foto: { type: "string", format: "url", example: "https://example.com/foto.jpg" }
                                         }
                                     }
                                 }
@@ -52,7 +48,7 @@ const loginPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    message: { type: "string" }
+                                    message: { type: "string", example: "Credenciais inválidas. Verifique seu email e senha e tente novamente." }
                                 }
                             }
                         }
@@ -65,7 +61,7 @@ const loginPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    message: { type: "string" }
+                                    message: { type: "string", example: "Usuário não encontrado. Verifique se o email está correto ou registre-se para criar uma conta." }
                                 }
                             }
                         }
@@ -78,7 +74,7 @@ const loginPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    message: { type: "string" }
+                                    message: { type: "string", example: "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde." }
                                 }
                             }
                         }

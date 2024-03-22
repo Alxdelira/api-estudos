@@ -3,7 +3,7 @@ const userPath = {
         post: {
             tags: ["Usuarios"],
             summary: "Cria um novo usuário",
-            description: "Cria um novo usuário com os dados fornecidos",
+            description: "Endpoint para criar um novo usuário com os dados fornecidos.",
             requestBody: {
                 required: true,
                 content: {
@@ -11,10 +11,10 @@ const userPath = {
                         schema: {
                             type: "object",
                             properties: {
-                                nome: { type: "string" },
-                                email: { type: "string" },
-                                senha: { type: "string" },
-                                foto: { type: "string" }
+                                nome: { type: "string", example: "João da Silva" },
+                                email: { type: "string", format: "email", example: "joao@example.com" },
+                                senha: { type: "string", example: "senha123" },
+                                foto: { type: "string", format: "url", example: "https://example.com/foto.jpg" }
                             },
                             required: ["nome", "email", "senha"]
                         }
@@ -29,8 +29,16 @@ const userPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    message: { type: "string" },
-                                    novoUsuario: { type: "object" }
+                                    message: { type: "string", example: "Novo usuário criado com sucesso!" },
+                                    novoUsuario: {
+                                        type: "object",
+                                        properties: {
+                                            _id: { type: "string", example: "5f0a2e6ac163b613a0555c14" },
+                                            nome: { type: "string", example: "João da Silva" },
+                                            email: { type: "string", format: "email", example: "joao@example.com" },
+                                            foto: { type: "string", format: "url", example: "https://example.com/foto.jpg" }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -43,8 +51,8 @@ const userPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
+                                    error: { type: "number", example: 400 },
+                                    message: { type: "string", example: "Preencha todos os campos obrigatórios." }
                                 }
                             }
                         }
@@ -57,8 +65,8 @@ const userPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
+                                    error: { type: "number", example: 500 },
+                                    message: { type: "string", example: "Erro interno no servidor. Por favor, tente novamente mais tarde." }
                                 }
                             }
                         }
@@ -68,8 +76,8 @@ const userPath = {
         },
         get: {
             tags: ["Usuarios"],
-            summary: "Lista todos os usuários do sistema",
-            description: "Retorna uma lista de todos os usuários cadastrados e suas respectivas informações",
+            summary: "Lista todos os usuários",
+            description: "Endpoint para listar todos os usuários cadastrados.",
             responses: {
                 200: {
                     description: "Lista de usuários retornada com sucesso",
@@ -78,27 +86,38 @@ const userPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    docs: { type: "array" },
-                                    totalDocs: { type: "number" },
-                                    totalPages: { type: "number" },
-                                    page: { type: "number" },
-                                    pagingCounter: { type: "number" },
-                                    hasPrevPage: { type: "boolean" },
-                                    hasNextPage: { type: "boolean" }
+                                    docs: {
+                                        type: "array",
+                                        items: {
+                                            type: "object",
+                                            properties: {
+                                                _id: { type: "string", example: "5f0a2e6ac163b613a0555c14" },
+                                                nome: { type: "string", example: "João da Silva" },
+                                                email: { type: "string", format: "email", example: "joao@example.com" },
+                                                foto: { type: "string", format: "url", example: "https://example.com/foto.jpg" }
+                                            }
+                                        }
+                                    },
+                                    totalDocs: { type: "number", example: 2 },
+                                    totalPages: { type: "number", example: 1 },
+                                    page: { type: "number", example: 1 },
+                                    pagingCounter: { type: "number", example: 1 },
+                                    hasPrevPage: { type: "boolean", example: false },
+                                    hasNextPage: { type: "boolean", example: false }
                                 }
                             }
                         }
                     }
                 },
                 404: {
-                    description: "Usuário não encontrado",
+                    description: "Nenhum usuário encontrado",
                     content: {
                         "application/json": {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
+                                    error: { type: "number", example: 404 },
+                                    message: { type: "string", example: "Nenhum usuário encontrado." }
                                 }
                             }
                         }
@@ -111,8 +130,8 @@ const userPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
+                                    error: { type: "number", example: 500 },
+                                    message: { type: "string", example: "Erro interno no servidor. Por favor, tente novamente mais tarde." }
                                 }
                             }
                         }
@@ -125,7 +144,7 @@ const userPath = {
         get: {
             tags: ["Usuarios"],
             summary: "Obtém informações de um usuário por ID",
-            description: "Retorna as informações de um usuário específico com base em seu ID",
+            description: "Endpoint para obter informações de um usuário específico com base em seu ID.",
             parameters: [
                 {
                     name: "id",
@@ -133,7 +152,8 @@ const userPath = {
                     description: "ID do usuário a ser consultado",
                     required: true,
                     schema: {
-                        type: "string"
+                        type: "string",
+                        example: "5f0a2e6ac163b613a0555c14"
                     }
                 }
             ],
@@ -142,14 +162,15 @@ const userPath = {
                     description: "Informações do usuário retornadas com sucesso",
                     content: {
                         "application/json": {
-                            schema: {
+                            schema:
+                            {
                                 type: "object",
                                 properties: {
-                                    _id: { type: "string" },
-                                    nome: { type: "string" },
-                                    email: { type: "string" },
-                                    senha: { type: "string" },
-                                    foto: { type: "string" }
+                                    _id: { type: "string", example: "5f0a2e6ac163b613a0555c14" },
+                                    nome: { type: "string", example: "João da Silva" },
+                                    email: { type: "string", format: "email", example: "joao@example.com" },
+                                    senha: { type: "string", example: "senha123" },
+                                    foto: { type: "string", format: "url", example: "https://example.com/foto.jpg" }
                                 }
                             }
                         }
@@ -162,8 +183,8 @@ const userPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
+                                    error: { type: "number", example: 404 },
+                                    message: { type: "string", example: "Usuário não encontrado." }
                                 }
                             }
                         }
@@ -176,19 +197,21 @@ const userPath = {
                             schema: {
                                 type: "object",
                                 properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
+                                    error: {
+                                        error: { type: "number", example: 500 },
+                                        message: { type: "string", example: "Erro interno no servidor. Por favor, tente novamente mais tarde." }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
+            },
         },
         put: {
             tags: ["Usuarios"],
-            summary: "Atualiza as informações de um usuário por ID",
-            description: "Atualiza as informações de um usuário específico com base em seu ID",
+            summary: "Atualiza informações de um usuário por ID",
+            description: "Endpoint para atualizar informações de um usuário específico com base em seu ID.",
             parameters: [
                 {
                     name: "id",
@@ -196,7 +219,8 @@ const userPath = {
                     description: "ID do usuário a ser atualizado",
                     required: true,
                     schema: {
-                        type: "string"
+                        type: "string",
+                        example: "5f0a2e6ac163b613a0555c14"
                     }
                 }
             ],
@@ -207,10 +231,10 @@ const userPath = {
                         schema: {
                             type: "object",
                             properties: {
-                                nome: { type: "string" },
-                                email: { type: "string" },
-                                senha: { type: "string" },
-                                foto: { type: "string" }
+                                nome: { type: "string", example: "Novo Nome" },
+                                email: { type: "string", format: "email", example: "novoemail@example.com" },
+                                senha: { type: "string", example: "novaSenha123" },
+                                foto: { type: "string", format: "url", example: "https://example.com/nova-foto.jpg" }
                             }
                         }
                     }
@@ -223,8 +247,16 @@ const userPath = {
                                 schema: {
                                     type: "object",
                                     properties: {
-                                        message: { type: "string" },
-                                        usuarioAtualizado: { type: "object" }
+                                        message: { type: "string", example: "Usuário atualizado com sucesso!" },
+                                        usuarioAtualizado: {
+                                            type: "object",
+                                            properties: {
+                                                _id: { type: "string", example: "5f0a2e6ac163b613a0555c14" },
+                                                nome: { type: "string", example: "Novo Nome" },
+                                                email: { type: "string", format: "email", example: "novoemail@example.com" },
+                                                foto: { type: "string", format: "url", example: "https://example.com/nova-foto.jpg" }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -237,8 +269,8 @@ const userPath = {
                                 schema: {
                                     type: "object",
                                     properties: {
-                                        error: { type: "number" },
-                                        message: { type: "string" }
+                                        error: { type: "number", example: 400 },
+                                        message: { type: "string", example: "Por favor, preencha todos os campos obrigatórios." }
                                     }
                                 }
                             }
@@ -251,8 +283,8 @@ const userPath = {
                                 schema: {
                                     type: "object",
                                     properties: {
-                                        error: { type: "number" },
-                                        message: { type: "string" }
+                                        error: { type: "number", example: 404 },
+                                        message: { type: "string", example: "Usuário não encontrado." }
                                     }
                                 }
                             }
@@ -265,8 +297,49 @@ const userPath = {
                                 schema: {
                                     type: "object",
                                     properties: {
-                                        error: { type: "number" },
-                                        message: { type: "string" }
+                                        error: { type: "number", example: 500 },
+                                        message: { type: "string", example: "Erro interno no servidor. Por favor, tente novamente mais tarde." }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+    },
+    delete: {
+        tags: ["Usuarios"],
+        summary: "Deleta um usuário por ID",
+        description: "Endpoint para deletar um usuário específico com base em seu ID.",
+        parameters: [
+            {
+                name: "id",
+                in: "path",
+                description: "ID do usuário a ser deletado",
+                required: true,
+                schema: {
+                    type: "string",
+                    example: "5f0a2e6ac163b613a0555c14"
+                }
+            }
+        ],
+        responses: {
+            200: {
+                description: "Usuário deletado com sucesso",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                message: { type: "string", example: "Usuário deletado com sucesso!" },
+                                usuarioDeletado: {
+                                    type: "object",
+                                    properties: {
+                                        _id: { type: "string", example: "5f0a2e6ac163b613a0555c14" },
+                                        nome: { type: "string", example: "João da Silva" },
+                                        email: { type: "string", format: "email", example: "joao@example.com" },
+                                        foto: { type: "string", format: "url", example: "https://example.com/foto.jpg" }
                                     }
                                 }
                             }
@@ -274,62 +347,29 @@ const userPath = {
                     }
                 }
             },
-
-        },
-        delete: {
-            tags: ["Usuarios"],
-            summary: "Deleta um usuário por ID",
-            description: "Deleta um usuário específico com base em seu ID",
-            parameters: [
-                {
-                    name: "id",
-                    in: "path",
-                    description: "ID do usuário a ser deletado",
-                    required: true,
-                    schema: {
-                        type: "string"
+            404: {
+                description: "Usuário não encontrado",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                error: { type: "number", example: 404 },
+                                message: { type: "string", example: "Usuário não encontrado." }
+                            }
+                        }
                     }
                 }
-            ],
-            responses: {
-                200: {
-                    description: "Usuário deletado com sucesso",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    message: { type: "string" },
-                                    usuarioDeletado: { type: "object" }
-                                }
-                            }
-                        }
-                    }
-                },
-                404: {
-                    description: "Usuário não encontrado",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
-                                }
-                            }
-                        }
-                    }
-                },
-                500: {
-                    description: "Erro interno no servidor",
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    error: { type: "number" },
-                                    message: { type: "string" }
-                                }
+            },
+            500: {
+                description: "Erro interno no servidor",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                error: { type: "number", example: 500 },
+                                message: { type: "string", example: "Erro interno no servidor. Por favor, tente novamente mais tarde." }
                             }
                         }
                     }
@@ -337,5 +377,9 @@ const userPath = {
             }
         }
     }
-}
+};
+
+
 export default userPath;
+
+
