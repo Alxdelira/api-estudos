@@ -24,7 +24,7 @@ const  swaggerOptions = {
     },
     servers: [
       {
-        url:'http://localhost:3030',
+        url:'https://api-estudos.vercel.app/',
         description: 'Api para Estudos - Local',
       },
       {
