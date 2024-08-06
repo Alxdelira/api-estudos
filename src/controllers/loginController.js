@@ -10,32 +10,41 @@ export default class LoginController {
   static async login(req, res) {
     try {
       const { email, senha } = req.body;
+
+      if (!email || !senha) {
+        return res.status(400).json({ message: 'Credenciais inválidas. Verifique seu email e senha e tente novamente.' });
+      }
+
       const usuario = await UsuarioModel.findOne({ email }).select('+senha');
 
       if (!usuario) {
-        return res.status(404).json({ message: 'Usuário não encontrado!' });
+        return res.status(404).json({ message: 'Usuário não encontrado. Verifique se o email está correto ou registre-se para criar uma conta.' });
       }
+
+      const isPasswordValid = await bcrypt.compare(senha, usuario.senha);
+      if (!isPasswordValid) {
+        return res.status(400).json({ message: 'Credenciais inválidas. Verifique seu email e senha e tente novamente.' });
+      }
+
       if (!secret) {
-        return res.status(500).json({ message: 'Segredo não definido!' });
+        return res.status(500).json({ message: 'Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.' });
       }
-      const token = jwt.sign({ id: usuario._id}, secret, {
-        expiresIn: '1h'
+
+      const token = jwt.sign({ id: usuario._id }, secret, { expiresIn: '1h' });
+
+      const fotoPerfil = usuario.foto || 'Foto do perfil não cadastrada';
+
+      return res.status(200).json({
+        token,
+        usuario: {
+          nome: usuario.nome,
+          email: usuario.email,
+          foto: fotoPerfil,
+        },
       });
-
-      if (!await bcrypt.compare(senha, usuario.senha)) {
-        return res.status(400).json({ message: 'Usuário ou senha inválida!' });
-      }
-
-      let fotoPerfil;
-      if (usuario.foto) {
-        fotoPerfil = usuario.foto;
-      } else {
-        fotoPerfil = 'Foto do perfil não cadastrada';
-      }
-
-      res.status(200).json({ token, usuario: { nome: usuario.nome, email: usuario.email, foto: fotoPerfil } });
     } catch (error) {
-      res.status(500).json({message: 'Erro Interno no Servidor!'});
+      console.error('Erro no login:', error);
+      return res.status(500).json({ message: 'Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.' });
     }
   }
 }

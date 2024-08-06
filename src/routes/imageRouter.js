@@ -1,66 +1,62 @@
 import { Router } from "express";
 import multer from "multer";
-import AuthMiddleware from "../middlewares/AuthMiddleware.js";
-import ImagensControllers from "../controllers/imageController.js";
-import express from "express";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
+import express from "express";
 import authMiddleware from "../middlewares/AuthMiddleware.js";
+import ImagensControllers from "../controllers/imageController.js";
 
 const imagensRouter = Router();
 
-const createStorage = (req, res, next) => {
-    if (!fs.existsSync('imagens')) {
-        fs.mkdirSync('imagens');
+// Middleware para criar diretório de imagens se não existir
+const createStorageDirectory = (req, res, next) => {
+    const imagesDir = 'imagens';
+    if (!fs.existsSync(imagesDir)) {
+        fs.mkdirSync(imagesDir);
     }
-    next()
-}
+    next();
+};
 
+// Configuração do armazenamento com multer
 const storage = multer.diskStorage({
-
     destination: (req, file, cb) => {
         cb(null, "imagens");
     },
     filename: (req, file, cb) => {
-        cb(null, uuidv4() + "." + file.mimetype.split("/")[1]);
+        const fileExtension = file.mimetype.split("/")[1];
+        cb(null, `${uuidv4()}.${fileExtension}`);
     },
 });
 
+// Filtro de arquivo para aceitar apenas imagens
 const fileFilter = (req, file, cb) => {
-    const errors = [];
-
-    if (!/^image/.test(file.mimetype))
-        errors.push("Tipo de arquivo inválido, envie somente imagens");
-
-    if (errors.length > 0) return cb(null, false);
-
+    if (!/^image/.test(file.mimetype)) {
+        return cb(new Error("Tipo de arquivo inválido. Envie somente imagens."), false);
+    }
     cb(null, true);
 };
 
+// Configuração do middleware multer
 const upload = multer({
     storage,
     fileFilter,
     limits: {
-        fileSize: 1024 * 1024 * 10,
+        fileSize: 1024 * 1024 * 10, // Limite de 10MB
     },
 });
 
-
-
-
-
+// Servir arquivos estáticos na rota /imagens
 imagensRouter.use("/imagens", express.static("imagens"));
 
-imagensRouter 
+// Rotas de imagem com middleware de autenticação
+imagensRouter
     .route("/imagens")
-    .post(authMiddleware,createStorage, upload.single("image"), ImagensControllers.enviarImagem)
+    .post(authMiddleware, createStorageDirectory, upload.single("image"), ImagensControllers.enviarImagem)
     .get(ImagensControllers.listarImagens);
+
 imagensRouter
     .route("/imagens/:id")
+    .get(authMiddleware, ImagensControllers.mostrarImagem)
     .delete(authMiddleware, ImagensControllers.deletarImagem);
-imagensRouter
-    .route("/imagens/:id")
-    .get(authMiddleware,ImagensControllers.mostrarImagem);
 
 export default imagensRouter;
-

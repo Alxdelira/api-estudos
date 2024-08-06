@@ -1,96 +1,140 @@
-import fs from "fs";
-import ImagemModel from "../models/image.js";
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
+import ImagemModel from '../models/image.js';
+
+const unlinkAsync = promisify(fs.unlink);
+const renameAsync = promisify(fs.rename);
 
 class ImagensControllers {
-
-
   static async enviarImagem(req, res, next) {
-    if (!req.file) {
-      return res.status(400).send({
-        codigo: 400,
-        mensagem: "Arquivo inválido",
-      });
-    }
-
     const arquivo = req.file;
-    const usuarioId = req.usuario._id.id;
-
-
-
-    if (!usuarioId) {
-      return res.status(401).send({
-        codigo: 401,
-        mensagem: "Usuário não autenticado",
+    if (!arquivo) {
+      return res.status(400).json({
+        codigo: 400,
+        mensagem: 'Arquivo inválido',
       });
     }
 
-    const imagem = new ImagemModel({
-      id_imagem: arquivo.filename.split(".")[0],
-      tipo_arquivo: arquivo.filename.split(".")[1],
-      enviado_por: usuarioId, // Usa o ID do usuário em vez do objeto completo
-      caminho: "/imagens/" + arquivo.filename,
-    });
+    const usuarioId = req.usuario && req.usuario._id;
+    // if (!usuarioId) {
+    //   return res.status(401).json({
+    //     codigo: 401,
+    //     mensagem: 'Usuário não autenticado',
+    //   });
+    // }
 
+    const imagemData = {
+      id_imagem: path.parse(arquivo.filename).name,
+      tipo_arquivo: path.extname(arquivo.filename).slice(1),
+      enviado_por: usuarioId,
+      caminho: `/imagens/${arquivo.filename}`,
+    };
+
+    let imagem;
     try {
+      // Cria um registro da imagem no banco de dados
+      imagem = new ImagemModel(imagemData);
       await imagem.save();
 
-      res.status(201).send({
+      // Move o arquivo para o diretório correto após salvar o registro no banco
+      const novoCaminho = path.join('imagens', arquivo.filename);
+      await renameAsync(arquivo.path, novoCaminho);
+
+      return res.status(201).json({
         codigo: 201,
-        mensagem: "Imagem enviada com sucesso",
+        mensagem: 'Imagem enviada com sucesso',
         dados: imagem,
       });
     } catch (error) {
-      console.error("Erro ao enviar imagem:", error);
-      return res.status(500).send({
+      console.error('Erro ao enviar imagem:', error);
+
+      // Se ocorrer um erro, remova o arquivo se ele já foi movido
+      if (imagem) {
+        // Se o registro foi criado, remova o arquivo, se ele já foi movido
+        const caminhoImagem = path.join('imagens', arquivo.filename);
+        try {
+          await unlinkAsync(caminhoImagem);
+        } catch (unlinkError) {
+          console.error('Erro ao remover imagem do sistema de arquivos:', unlinkError);
+        }
+      }
+
+      return res.status(500).json({
         codigo: 500,
-        mensagem: "Erro interno do servidor",
+        mensagem: 'Erro interno do servidor',
       });
     }
   }
+
   static async mostrarImagem(req, res, next) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    const imagem = await ImagemModel.findOne({
-      id_imagem: id
-    });
-
-    if (!imagem) {
-      return res.status(404).send("Imagem não encontrada");
-    }
-
-    res.sendFile(imagem.caminho, { root: "." });
-  }
-  static async deletarImagem(req, res, next) {
-    const { id } = req.params;
-
-    const imagem = await ImagemModel.findOne({
-      id_imagem: id
-    });
-
-    if (!imagem) {
-      return res.status(404).send("Imagem não encontrada");
-    }
-
-    fs.unlink(
-      `imagens/${imagem.id_imagem}.${imagem.tipo_arquivo}`,
-      async (err) => {
-        if (err) {
-          console.error("Erro ao deletar imagem:", err);
-          return res.status(500).send("Erro interno do servidor");
-        } else {
-          await imagem.deleteOne();
-          res.send("Imagem deletada com sucesso");
-        }
+      const imagem = await ImagemModel.findOne({ id_imagem: id });
+      if (!imagem) {
+        return res.status(404).json({
+          codigo: 404,
+          mensagem: 'Imagem não encontrada',
+        });
       }
-    );
+
+      res.sendFile(imagem.caminho, { root: '.' });
+    } catch (error) {
+      console.error('Erro ao mostrar imagem:', error);
+      return res.status(500).json({
+        codigo: 500,
+        mensagem: 'Erro interno do servidor',
+      });
+    }
+  }
+
+  static async deletarImagem(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const imagem = await ImagemModel.findOne({ id_imagem: id });
+      if (!imagem) {
+        return res.status(404).json({
+          codigo: 404,
+          mensagem: 'Imagem não encontrada',
+        });
+      }
+
+      // Remove o arquivo do sistema de arquivos
+      await unlinkAsync(`imagens/${imagem.id_imagem}.${imagem.tipo_arquivo}`);
+      await imagem.deleteOne();
+
+      return res.status(200).json({
+        codigo: 200,
+        mensagem: 'Imagem deletada com sucesso',
+      });
+    } catch (error) {
+      console.error('Erro ao deletar imagem:', error);
+      return res.status(500).json({
+        codigo: 500,
+        mensagem: 'Erro interno do servidor',
+      });
+    }
   }
 
   static async listarImagens(req, res, next) {
     try {
       const imagens = await ImagemModel.find();
-      res.status(200).json(imagens);
+      if (!imagens.length) {
+        return res.status(404).json({
+          codigo: 404,
+          mensagem: 'Nenhuma imagem encontrada',
+        });
+      }
+
+      return res.status(200).json(imagens);
     } catch (error) {
-      res.status(500).json({ error: 500, message: 'Erro Interno no Servidor!' });
+      console.error('Erro ao listar imagens:', error);
+      return res.status(500).json({
+        codigo: 500,
+        mensagem: 'Erro interno do servidor',
+      });
     }
   }
 }

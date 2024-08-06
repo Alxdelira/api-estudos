@@ -3,34 +3,42 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const SECRET = process.env.SECRET;
 
+if (!SECRET) {
+  throw new Error('A variável de ambiente SECRET não está definida');
+}
 
-const SECRET = process.env.SECRET || '';
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-const authMiddleware = (req , res , next ) => {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-        return res.status(401).json({ message: 'Token de autenticação não fornecido' });
-    }
-
-    const parts = authHeader.split(' ');
-
-    if (parts.length !== 2 || parts[0] !== 'Bearer') {
-        return res.status(401).json({ message: 'Formato de token inválido' });
-    }
-
-    const token = parts[1];
-
-    jwt.verify(token, SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ message: 'Token inválido' });
-        }
-        if (decoded) {
-            req.usuario = { _id: decoded };
-        }
-        next();
+  if (!authHeader) {
+    return res.status(401).json({
+      status: 401,
+      message: 'Token de autenticação não fornecido.',
     });
+  }
+
+  const [scheme, token] = authHeader.split(' ');
+
+  if (scheme !== 'Bearer' || !token) {
+    return res.status(401).json({
+      status: 401,
+      message: 'Formato de token inválido. Utilize o formato: Bearer [token]',
+    });
+  }
+
+  jwt.verify(token, SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({
+        status: 401,
+        message: 'Token inválido ou expirado.',
+      });
+    }
+
+    req.usuario = decoded; 
+    next();
+  });
 };
 
 export default authMiddleware;
