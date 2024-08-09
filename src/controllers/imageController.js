@@ -6,6 +6,7 @@ import ImagemModel from '../models/image.js';
 // Utiliza o promissify para funções baseadas em callback
 const unlinkAsync = promisify(fs.unlink);
 const renameAsync = promisify(fs.rename);
+const mkdirAsync = promisify(fs.mkdir);
 
 // Função para obter o diretório atual
 const getCurrentDir = () => path.dirname(new URL(import.meta.url).pathname);
@@ -31,6 +32,10 @@ class ImagensControllers {
   
     let imagem;
     try {
+      // Cria o diretório se não existir
+      const pastaDestino = path.resolve('imagens');
+      await mkdirAsync(pastaDestino, { recursive: true });
+  
       // Cria um registro da imagem no banco de dados
       imagem = new ImagemModel(imagemData);
       await imagem.save();
@@ -65,7 +70,6 @@ class ImagensControllers {
       });
     }
   }
-  
 
   static async mostrarImagem(req, res, next) {
     try {
@@ -102,7 +106,6 @@ class ImagensControllers {
       });
     }
   }
-  
 
   static async deletarImagem(req, res, next) {
     try {

@@ -27,7 +27,6 @@ const IMAGE_URLS = [
   'https://avatars.githubusercontent.com/u/83317702?v=4',
   'https://avatars.githubusercontent.com/u/124743844?v=4',
   'https://avatars.githubusercontent.com/u/115584120?v=4',
-
 ];
 
 const standardUser = {
@@ -88,6 +87,12 @@ const generateFakeImageData = async () => {
   const randomUrl = IMAGE_URLS[Math.floor(Math.random() * IMAGE_URLS.length)];
   const fileName = `${uuidv4()}.jpg`;  // Usa UUID e força a extensão .jpg
   const filePath = path.resolve('imagens', fileName);
+
+  // Cria o diretório se não existir
+  const pastaDestino = path.resolve('imagens');
+  if (!fs.existsSync(pastaDestino)) {
+    fs.mkdirSync(pastaDestino, { recursive: true });
+  }
 
   // Baixar a imagem
   await downloadImage(randomUrl, filePath);
