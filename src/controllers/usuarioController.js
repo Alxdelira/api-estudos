@@ -48,30 +48,35 @@ export default class UsuarioController {
     try {
       const { nome, email, page = 1, perPage = 10 } = req.query;
       const limit = Math.min(parseInt(perPage), 10);
-
-      const options = { page: parseInt(page), limit };
-
+  
       const pesquisa = {
         nome: { $regex: nome || '', $options: 'i' },
         email: { $regex: email || '', $options: 'i' }
       };
-
-      const usuarios = await UsuarioModel.paginate(pesquisa, options);
-
+  
+      const usuarios = await UsuarioModel.paginate(pesquisa, { page: parseInt(page), limit });
+  
       if (!usuarios.docs.length) {
         throw { status: 404, message: 'Nenhum usuário encontrado. Tente ajustar os filtros de pesquisa.' };
       }
-
+  
+      // Realizar o populate manualmente em cada documento
+      for (let i = 0; i < usuarios.docs.length; i++) {
+        await usuarios.docs[i].populate('foto');
+      }
+  
       res.status(200).json(usuarios);
     } catch (error) {
       console.error(error);
       res.status(error.status || 500).json({ error: error.status || 500, message: error.message || 'Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.' });
     }
   }
+  
 
   static async listarPorId(req, res) {
     try {
-      const usuario = await UsuarioModel.findById(req.params.id);
+      const usuario = await UsuarioModel.findById(req.params.id)
+      .populate('foto');
 
       if (!usuario) {
         throw { status: 404, message: 'Usuário não encontrado. Verifique o ID e tente novamente.' };
@@ -86,28 +91,38 @@ export default class UsuarioController {
 
   static async alterarUsuario(req, res) {
     try {
-      const { nome, email, senha } = req.body;
+      const { nome, email, senha, foto } = req.body; // Recebe o ID da foto no corpo da requisição
       const usuario = await UsuarioModel.findById(req.params.id);
-
+  
       if (!usuario) {
         throw { status: 404, message: 'Usuário não encontrado. Verifique o ID e tente novamente.' };
       }
-
+  
+      // Atualiza os campos do usuário apenas se foram fornecidos na requisição
       usuario.nome = nome || usuario.nome;
       usuario.email = email || usuario.email;
-
+      
       if (senha) {
         usuario.senha = await UsuarioController.hashPassword(senha);
       }
-
+  
+      if (foto) {
+        usuario.foto = foto; // Atualiza o campo foto com o novo ID
+      }
+  
+      if (!usuario.nome) {
+        throw { status: 400, message: 'Nome do usuário é obrigatório!' };
+      }
+  
       await usuario.save();
-
+  
       res.status(200).json({ message: 'Dados do usuário atualizados com sucesso!', usuario });
     } catch (error) {
       console.error(error);
       res.status(error.status || 500).json({ error: error.status || 500, message: error.message || 'Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.' });
     }
   }
+  
 
   static async deletarUsuario(req, res) {
     try {

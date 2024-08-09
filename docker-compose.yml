@@ -1,0 +1,19 @@
+services:
+  api-estudos:
+    restart: unless-stopped
+    container_name: api-estudos
+    build: 
+      context: .
+      args: 
+        - PORT=${PORT}
+        - NODE_ENV=development
+    ports:
+      - ${PORT}:${PORT}
+    volumes:
+      - ./data:/node-app/data
+    environment:
+      - PORT=${PORT}
+      - TZ=America/New_York
+      - LANG=${LANG}
+      - SECRET=${SECRET}
+      - DB_URL=${DB_URL}

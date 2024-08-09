@@ -24,6 +24,10 @@ const swaggerOptions = {
     },
     servers: [
       {
+        url: 'https://alexandre-3030.code.fslab.dev/',
+        description: 'Ambiente de Desenvolvimento FSLab',
+      },
+      {
         url: 'http://localhost:3030/',
         description: 'Ambiente de Desenvolvimento Local',
       },
@@ -31,6 +35,7 @@ const swaggerOptions = {
         url: 'https://api-estudos.vercel.app/',
         description: 'Ambiente de Produção',
       },
+      
     ],
     components: {
       securitySchemes: {

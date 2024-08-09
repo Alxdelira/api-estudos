@@ -17,12 +17,12 @@ class ImagensControllers {
     }
 
     const usuarioId = req.usuario && req.usuario._id;
-    // if (!usuarioId) {
-    //   return res.status(401).json({
-    //     codigo: 401,
-    //     mensagem: 'Usuário não autenticado',
-    //   });
-    // }
+    if (!usuarioId) {
+      return res.status(401).json({
+        codigo: 401,
+        mensagem: 'Usuário não autenticado',
+      });
+    }
 
     const imagemData = {
       id_imagem: path.parse(arquivo.filename).name,

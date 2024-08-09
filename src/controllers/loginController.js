@@ -15,7 +15,8 @@ export default class LoginController {
         return res.status(400).json({ message: 'Credenciais inválidas. Verifique seu email e senha e tente novamente.' });
       }
 
-      const usuario = await UsuarioModel.findOne({ email }).select('+senha');
+      // Adiciona o populate na propriedade foto
+      const usuario = await UsuarioModel.findOne({ email }).select('+senha').populate('foto');
 
       if (!usuario) {
         return res.status(404).json({ message: 'Usuário não encontrado. Verifique se o email está correto ou registre-se para criar uma conta.' });
@@ -32,14 +33,12 @@ export default class LoginController {
 
       const token = jwt.sign({ id: usuario._id }, secret, { expiresIn: '1h' });
 
-      const fotoPerfil = usuario.foto || 'Foto do perfil não cadastrada';
-
       return res.status(200).json({
         token,
         usuario: {
           nome: usuario.nome,
           email: usuario.email,
-          foto: fotoPerfil,
+          foto: usuario.foto, // Agora 'foto' estará populada com os dados completos
         },
       });
     } catch (error) {
@@ -48,3 +47,4 @@ export default class LoginController {
     }
   }
 }
+
