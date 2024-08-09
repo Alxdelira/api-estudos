@@ -70,7 +70,7 @@ class ImagensControllers {
   static async mostrarImagem(req, res, next) {
     try {
       const { id } = req.params;
-
+  
       // Encontre a imagem no banco de dados pelo ID
       const imagem = await ImagemModel.findOne({ id_imagem: id });
       if (!imagem) {
@@ -79,11 +79,12 @@ class ImagensControllers {
           mensagem: 'Imagem não encontrada',
         });
       }
-
+  
       // Converta o caminho armazenado em um caminho absoluto
-      // Supondo que imagem.caminho é um caminho relativo a partir da raiz do projeto
-      const caminhoImagem = path.resolve('imagens', path.basename(imagem.caminho));
-
+      const caminhoImagem = path.resolve('imagens', path.basename(imagem.caminho.split('?')[0]));
+  
+      console.log('Caminho da imagem:', caminhoImagem);
+  
       // Verifique se o arquivo realmente existe antes de tentar enviá-lo
       if (fs.existsSync(caminhoImagem)) {
         res.sendFile(caminhoImagem);
@@ -101,6 +102,7 @@ class ImagensControllers {
       });
     }
   }
+  
 
   static async deletarImagem(req, res, next) {
     try {

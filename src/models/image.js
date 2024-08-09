@@ -6,7 +6,7 @@ const imagemSchema = new mongoose.Schema(
     tipo_arquivo: {
       type: String,
       required: true, // Adiciona validação para garantir que o tipo de arquivo seja fornecido
-      enum: ['jpeg', 'png', 'gif', 'bmp', 'webp'], // Enum para restringir os tipos de arquivo permitidos
+      enum: ['jpeg', 'png', 'bmp', 'webp', 'jpg'], // Enum para restringir os tipos de arquivo permitidos
     },
     enviado_por: {
       type: mongoose.Types.ObjectId,
@@ -14,7 +14,6 @@ const imagemSchema = new mongoose.Schema(
     },
     caminho: {
       type: String,
-      unique: true, // Garante que o caminho da imagem seja único
     },
     id_imagem: {
       type: String,
