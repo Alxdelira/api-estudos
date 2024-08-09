@@ -65,24 +65,40 @@ export default class UsuarioController {
         await usuarios.docs[i].populate('foto');
       }
   
-      res.status(200).json(usuarios);
+      // Ajustar a resposta para incluir apenas o caminho da foto
+      const usuariosResponse = usuarios.docs.map(usuario => ({
+        ...usuario.toObject(),
+        foto: usuario.foto ? usuario.foto.id_imagem : null
+      }));
+  
+      res.status(200).json({
+        ...usuarios,
+        docs: usuariosResponse
+      });
     } catch (error) {
       console.error(error);
       res.status(error.status || 500).json({ error: error.status || 500, message: error.message || 'Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.' });
     }
   }
   
+  
 
   static async listarPorId(req, res) {
     try {
       const usuario = await UsuarioModel.findById(req.params.id)
-      .populate('foto');
-
+        .populate('foto');
+  
       if (!usuario) {
         throw { status: 404, message: 'Usuário não encontrado. Verifique o ID e tente novamente.' };
       }
-
-      res.status(200).json(usuario);
+  
+      // Ajustar a resposta para incluir apenas o caminho da foto
+      const usuarioResponse = {
+        ...usuario.toObject(),
+        foto: usuario.foto ? usuario.foto.id_imagem : null
+      };
+  
+      res.status(200).json(usuarioResponse);
     } catch (error) {
       console.error(error);
       res.status(error.status || 500).json({ error: error.status || 500, message: error.message || 'Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.' });
@@ -101,7 +117,7 @@ export default class UsuarioController {
       // Atualiza os campos do usuário apenas se foram fornecidos na requisição
       usuario.nome = nome || usuario.nome;
       usuario.email = email || usuario.email;
-      
+  
       if (senha) {
         usuario.senha = await UsuarioController.hashPassword(senha);
       }
@@ -116,12 +132,21 @@ export default class UsuarioController {
   
       await usuario.save();
   
-      res.status(200).json({ message: 'Dados do usuário atualizados com sucesso!', usuario });
+     
+  
+      // Ajustar a resposta para incluir apenas o caminho da foto
+      const usuarioResponse = {
+        ...usuario.toObject(),
+        foto: usuario.foto ? usuario.foto.id_imagem : null
+      };
+  
+      res.status(200).json({ message: 'Dados do usuário atualizados com sucesso!', usuario: usuarioResponse });
     } catch (error) {
       console.error(error);
       res.status(error.status || 500).json({ error: error.status || 500, message: error.message || 'Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.' });
     }
   }
+  
   
 
   static async deletarUsuario(req, res) {

@@ -38,7 +38,7 @@ export default class LoginController {
         usuario: {
           nome: usuario.nome,
           email: usuario.email,
-          foto: usuario.foto, // Agora 'foto' estará populada com os dados completos
+          foto: usuario.foto.caminho, // Agora 'foto' estará populada com os dados completos
         },
       });
     } catch (error) {
