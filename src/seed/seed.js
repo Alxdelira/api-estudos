@@ -85,8 +85,8 @@ const downloadImage = async (url, filePath) => {
 
 const generateFakeImageData = async () => {
   const randomUrl = IMAGE_URLS[Math.floor(Math.random() * IMAGE_URLS.length)];
-  const fileName = `${uuidv4()}.jpg`;  // Usa UUID e força a extensão .jpg
-  const filePath = path.resolve('imagens', fileName);
+  const fileNameWithExtension = `${uuidv4()}.jpg`;  // Usa UUID e força a extensão .jpg
+  const filePath = path.resolve('imagens', fileNameWithExtension);
 
   // Cria o diretório se não existir
   const pastaDestino = path.resolve('imagens');
@@ -98,9 +98,9 @@ const generateFakeImageData = async () => {
   await downloadImage(randomUrl, filePath);
 
   return {
-    id_imagem: uuidv4(),  // Gerar um ID único
+    id_imagem: path.basename(fileNameWithExtension, path.extname(fileNameWithExtension)),  // Remove a extensão
     tipo_arquivo: 'jpg',  // Força o tipo de arquivo para jpg
-    caminho: `/imagens/${fileName}`,
+    caminho: `/imagens/${fileNameWithExtension}`,
   };
 };
 

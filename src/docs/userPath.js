@@ -396,6 +396,42 @@ const userPath = {
                 }
             }
         }
+    },
+    "/dashboard": {
+        get: {
+            tags: ["Dashboard"],
+            summary: "Obtém o total de usuários cadastrados",
+            description: "Endpoint para obter o total de usuários cadastrados na base de dados.",
+            responses: {
+                200: {
+                    description: "Total de usuários retornado com sucesso",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    totalUsuarios: { type: "number", example: 100 }
+                                }
+                            }
+                        }
+                    }
+                },
+                500: {
+                    description: "Erro interno no servidor",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    error: { type: "number", example: 500 },
+                                    message: { type: "string", example: "Erro interno no servidor. Por favor, tente novamente mais tarde." }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 };
 

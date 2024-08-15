@@ -147,6 +147,10 @@ const swaggerOptions = {
         name: 'Imagens',
         description: 'Operações para o upload, recuperação e exclusão de imagens.',
       },
+      {
+        name: 'Dashboard',
+        description: 'Operações que traz a contagem de usuarios cadastrados',
+      }
     ],
     paths: { ...userPath, ...loginPath, ...imagePath },
   },

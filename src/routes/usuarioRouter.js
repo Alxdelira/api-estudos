@@ -26,6 +26,13 @@ router.post('/usuarios', authMiddleware, UsuarioController.criarUsuario);
 router.get('/usuarios/:id', authMiddleware, UsuarioController.listarPorId);
 
 /**
+ * @route GET /dashboard
+ * @desc Retorna a quantidade de usuarios cadstrados
+ * @access Public
+ */
+router.get('/dashboard', UsuarioController.contarUsuarios);
+
+/**
  * @route PUT /usuarios/:id
  * @desc Atualiza um usuário pelo ID
  * @access Private
