@@ -16,6 +16,7 @@ class ImagensControllers {
   
   static async enviarImagem(req, res, next) {
     const arquivo = req.file;
+    console.log(arquivo)
     if (!arquivo) {
       return res.status(400).json({
         codigo: 400,
@@ -76,7 +77,6 @@ class ImagensControllers {
       });
     }
   }
-
   static async mostrarImagem(req, res, next) {
     try {
       const { id } = req.params;
@@ -112,7 +112,6 @@ class ImagensControllers {
       });
     }
   }
-
   static async deletarImagem(req, res, next) {
     try {
       const { id } = req.params;
@@ -144,7 +143,6 @@ class ImagensControllers {
       });
     }
   }
-
   static async listarImagens(req, res, next) {
     try {
       const imagens = await ImagemModel.find();
@@ -158,6 +156,79 @@ class ImagensControllers {
       return res.status(200).json(imagens);
     } catch (error) {
       console.error('Erro ao listar imagens:', error);
+      return res.status(500).json({
+        codigo: 500,
+        mensagem: 'Erro interno do servidor',
+      });
+    }
+  }
+  static async atualizarImagem(req, res, next) {
+    const arquivo = req.file;
+    const usuarioId = req.params.id;
+
+    console.log(arquivo)
+    if (!arquivo) {
+      return res.status(400).json({
+        codigo: 400,
+        mensagem: 'Arquivo inválido',
+      });
+    }
+
+    try {
+      // Encontra o usuário pelo ID
+      const usuario = await UsuarioModel.findById(usuarioId);
+      if (!usuario) {
+        return res.status(404).json({
+          codigo: 404,
+          mensagem: 'Usuário não encontrado',
+        });
+      }
+
+      // Se o usuário já tem uma imagem, remova-a
+      if (usuario.foto) {
+        const imagemAntiga = await ImagemModel.findById(usuario.foto);
+        if (imagemAntiga) {
+          const caminhoImagemAntiga = path.join(getCurrentDir(), '..', 'imagens', `${imagemAntiga.id_imagem}.${imagemAntiga.tipo_arquivo}`);
+          if (fs.existsSync(caminhoImagemAntiga)) {
+            await unlinkAsync(caminhoImagemAntiga);
+          }
+          await imagemAntiga.deleteOne();
+        }
+      }
+
+      // Cria o diretório se não existir
+      const pastaDestino = path.resolve('imagens');
+      await mkdirAsync(pastaDestino, { recursive: true });
+
+      // Cria um novo registro de imagem no banco de dados
+      const imagemData = {
+        id_imagem: path.parse(arquivo.filename).name,
+        tipo_arquivo: path.extname(arquivo.filename).slice(1),
+        enviado_por: usuarioId,
+        caminho: `/imagens/${arquivo.filename}`,
+      };
+
+      const novaImagem = new ImagemModel(imagemData);
+      await novaImagem.save();
+
+      // Caminho absoluto para o destino
+      const caminhoDestino = path.resolve('imagens', arquivo.filename);
+
+      // Move o arquivo para o diretório correto
+      await renameAsync(arquivo.path, caminhoDestino);
+
+      // Atualiza o usuário com a nova imagem
+      usuario.foto = novaImagem._id;
+      await usuario.save();
+
+      return res.status(200).json({
+        codigo: 200,
+        mensagem: 'Imagem atualizada com sucesso',
+        dados: novaImagem,
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar imagem:', error);
+
       return res.status(500).json({
         codigo: 500,
         mensagem: 'Erro interno do servidor',

@@ -290,6 +290,7 @@ const imagePath = {
                                 properties: {
                                     codigo: {
                                         type: "number",
+                                        example: 404,
                                     },
                                     mensagem: {
                                         type: "string",
@@ -400,6 +401,193 @@ const imagePath = {
                                     mensagem: {
                                         type: "string",
                                         example: "Imagem não encontrada.",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                500: {
+                    description: "Erro interno do servidor",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    codigo: {
+                                        type: "number",
+                                    },
+                                    mensagem: {
+                                        type: "string",
+                                        example: "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+    "/imagens/usuario/{id}": {
+        put: {
+            tags: ["Imagens"],
+            summary: "Atualiza a imagem de um usuário",
+            description: "Atualiza a imagem correspondente ao ID do usuário fornecido.",
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    description: "ID do usuário cuja imagem deve ser atualizada.",
+                    schema: {
+                        type: "string",
+                    },
+                },
+            ],
+            requestBody: {
+                content: {
+                    "multipart/form-data": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                image: {
+                                    type: "string",
+                                    format: "binary",
+                                    description: "Arquivo da nova imagem.",
+                                },
+                            },
+                            required: ["image"],
+                        },
+                    },
+                },
+            },
+            responses: {
+                200: {
+                    description: "Imagem atualizada com sucesso",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    codigo: {
+                                        type: "number",
+                                    },
+                                    mensagem: {
+                                        type: "string",
+                                        example: "Imagem atualizada com sucesso",
+                                    },
+                                    dados: {
+                                        type: "object",
+                                        properties: {
+                                            tipo_arquivo: {
+                                                type: "string",
+                                                description: "Tipo do arquivo da imagem.",
+                                            },
+                                            enviado_por: {
+                                                type: "string",
+                                                description: "ID do usuário que enviou a imagem.",
+                                            },
+                                            caminho: {
+                                                type: "string",
+                                                description: "Caminho onde a imagem está armazenada.",
+                                            },
+                                            id_imagem: {
+                                                type: "string",
+                                                description: "ID da imagem.",
+                                            },
+                                            criado_em: {
+                                                type: "string",
+                                                format: "date-time",
+                                                description: "Data e hora em que a imagem foi criada.",
+                                            },
+                                            atualizado_em: {
+                                                type: "string",
+                                                format: "date-time",
+                                                description: "Data e hora da última atualização da imagem.",
+                                            },
+                                            _id: {
+                                                type: "string",
+                                                description: "ID interno do MongoDB.",
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                400: {
+                    description: "Arquivo inválido",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    codigo: {
+                                        type: "number",
+                                    },
+                                    mensagem: {
+                                        type: "string",
+                                        example: "Nenhum arquivo enviado ou formato inválido.",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                401: {
+                    description: "Não autorizado",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    codigo: {
+                                        type: "number",
+                                    },
+                                    mensagem: {
+                                        type: "string",
+                                        example: "Usuário não autenticado.",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                403: {
+                    description: "Proibido",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    codigo: {
+                                        type: "number",
+                                    },
+                                    mensagem: {
+                                        type: "string",
+                                        example: "Você não tem permissão para atualizar esta imagem.",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                404: {
+                    description: "Usuário não encontrado",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    codigo: {
+                                        type: "number",
+                                        example: 404,
+                                    },
+                                    mensagem: {
+                                        type: "string",
+                                        example: "Usuário não encontrado.",
                                     },
                                 },
                             },

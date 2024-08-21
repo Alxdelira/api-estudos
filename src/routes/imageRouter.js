@@ -57,7 +57,11 @@ imagensRouter
 imagensRouter
     .route("/imagens/:id")
     .get(ImagensControllers.mostrarImagem) // Sem autenticação para visualizar imagens
-    .delete(authMiddleware, ImagensControllers.deletarImagem);
+    .delete(authMiddleware, ImagensControllers.deletarImagem)
+
+imagensRouter
+    .route("/imagens/usuario/:id")
+    .put(authMiddleware,createStorageDirectory, upload.single("image"), ImagensControllers.atualizarImagem)
 
 export default imagensRouter;
 

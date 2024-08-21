@@ -85,8 +85,7 @@ const userPath = {
                     description: "Nome do usuário para busca",
                     required: false,
                     schema: {
-                        type: "string",
-                        example: "João"
+                        type: "string"
                     }
                 },
                 {
@@ -96,7 +95,6 @@ const userPath = {
                     required: false,
                     schema: {
                         type: "string",
-                        example: "joao@example.com"
                     }
                 },
                 {
@@ -195,7 +193,6 @@ const userPath = {
                     required: true,
                     schema: {
                         type: "string",
-                        example: "5f0a2e6ac163b613a0555c14"
                     }
                 }
             ],
