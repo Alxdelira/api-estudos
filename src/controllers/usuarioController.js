@@ -68,7 +68,7 @@ export default class UsuarioController {
       // Ajustar a resposta para incluir apenas o caminho da foto
       const usuariosResponse = usuarios.docs.map(usuario => ({
         ...usuario.toObject(),
-        foto: usuario.foto ? usuario.foto.id_imagem : null
+        foto: usuario.foto ? usuario.foto.id : null
       }));
 
       res.status(200).json({
@@ -106,7 +106,7 @@ export default class UsuarioController {
       // Ajustar a resposta para incluir apenas o caminho da foto
       const usuarioResponse = {
         ...usuario.toObject(),
-        foto: usuario.foto ? usuario.foto.id_imagem : null
+        foto: usuario.foto ? usuario.foto.id : null
       };
 
       res.status(200).json(usuarioResponse);

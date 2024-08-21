@@ -12,27 +12,27 @@
   "author": "Alexandre Nogueira",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.1",
-    "express": "^4.18.2",
-    "faker": "^5.5.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "faker": "^6.6.6",
     "faker-br": "^0.4.1",
     "fs-extra": "^11.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.3.0",
-    "mongoose": "^8.5.2",
-    "mongoose-paginate-v2": "^1.8.0",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.3",
+    "mongoose-paginate-v2": "^1.8.3",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.3.2",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "4.6.3",
-    "uuid": "^9.0.1"
+    "swagger-ui-express": "5.0.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "nodemon": "^3.0.3",
-    "supertest": "^6.3.4"
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
   }
 }

@@ -38,7 +38,7 @@ export default class LoginController {
         usuario: {
           nome: usuario.nome,
           email: usuario.email,
-          foto: usuario.foto ? `/imagens/${usuario.foto.id_imagem}.${usuario.foto.tipo_arquivo}` : null, // Retorna a URL completa da imagem
+          foto: usuario.foto ? usuario.foto.id : null, // Retorna a URL completa da imagem
         },
       });
     } catch (error) {

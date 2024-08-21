@@ -35,7 +35,6 @@ const swaggerOptions = {
         url: 'https://api-estudos.vercel.app/',
         description: 'Ambiente de Produção',
       },
-      
     ],
     components: {
       securitySchemes: {
@@ -149,8 +148,8 @@ const swaggerOptions = {
       },
       {
         name: 'Dashboard',
-        description: 'Operações que traz a contagem de usuarios cadastrados',
-      }
+        description: 'Operações que traz a contagem de usuários cadastrados',
+      },
     ],
     paths: { ...userPath, ...loginPath, ...imagePath },
   },

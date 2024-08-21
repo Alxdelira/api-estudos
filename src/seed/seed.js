@@ -7,15 +7,18 @@ import fs from 'fs';
 import path from 'path';
 import * as dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
-import faker from 'faker';
 
 dotenv.config();
 
 const SALT_ROUNDS = 8;
-const NUM_USERS = 10;
-const NUM_IMAGES_PER_USER = 1;
+const USERS = [
+  { nome: 'Hedi Minin', email: 'hedi.minin@example.com' },
+  { nome: 'Mateus Moraes', email: 'mateus.moraes@example.com' },
+  { nome: 'Pablo Smolak', email: 'pablo.smolak@example.com' },
+  { nome: 'Theodoro Flor da Rosa', email: 'theodoro.rosa@example.com' },
+  { nome: 'Alexandre Nogueira', email: 'alx.delira@gmail.com' },
+];
 
-// URLs das imagens no GitHub
 const IMAGE_URLS = [
   'https://avatars.githubusercontent.com/u/159805814?v=4',
   'https://avatars.githubusercontent.com/u/102405026?v=4',
@@ -28,13 +31,6 @@ const IMAGE_URLS = [
   'https://avatars.githubusercontent.com/u/124743844?v=4',
   'https://avatars.githubusercontent.com/u/115584120?v=4',
 ];
-
-const standardUser = {
-  nome: 'Alexandre Nogueira',
-  email: 'alx.delira@gmail.com',
-  senha: '12345678',
-  foto: null,
-};
 
 const connectToDatabase = async () => {
   try {
@@ -109,45 +105,20 @@ const seedUsersAndImages = async () => {
     await UsuarioModel.deleteMany({});
     await ImagemModel.deleteMany({});
 
-    const senhaHash = await bcrypt.hash(standardUser.senha, SALT_ROUNDS);
+    const senhaHash = await bcrypt.hash('12345678', SALT_ROUNDS);
 
-    const usuarioPadrao = await UsuarioModel.create({
-      ...standardUser,
-      senha: senhaHash,
-    });
-
-    for (let i = 0; i < NUM_USERS; i++) {
-      const nome = faker.name.findName();
-      const email = faker.internet.email();
-      const senha = faker.internet.password();
-      const senhaHash = await bcrypt.hash(senha, SALT_ROUNDS);
+    for (const user of USERS) {
+      // Gera uma imagem para cada usuário
+      const imagemData = await generateFakeImageData();
+      
+      const novaImagem = await ImagemModel.create(imagemData);
 
       const novoUsuario = await UsuarioModel.create({
-        nome,
-        email,
+        ...user,
         senha: senhaHash,
+        foto: novaImagem._id, // Atribui o ID da imagem ao campo foto
       });
-
-      const imagensIds = [];
-      for (let j = 0; j < NUM_IMAGES_PER_USER; j++) {
-        const imagemData = await generateFakeImageData();
-        imagemData.enviado_por = novoUsuario._id;
-
-        const novaImagem = await ImagemModel.create(imagemData);
-        imagensIds.push(novaImagem._id);
-      }
-
-      novoUsuario.foto = imagensIds[0];
-      await novoUsuario.save();
     }
-
-    // Atualiza o usuário padrão com uma imagem padrão
-    const imagemPadrao = await generateFakeImageData();
-    imagemPadrao.enviado_por = usuarioPadrao._id;
-    const imagemCriada = await ImagemModel.create(imagemPadrao);
-
-    usuarioPadrao.foto = imagemCriada._id;
-    await usuarioPadrao.save();
 
     console.log('Usuários e imagens criados com sucesso.');
     process.exit(0);

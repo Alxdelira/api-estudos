@@ -32,42 +32,42 @@ const loginPath = {
                 200: {
                     description: "Login realizado com sucesso",
                     content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    token: { 
-                                        type: "string", 
-                                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFseC5kZWxpcmFAZ21haWwuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.S9lZ1Zk7hB7h0OFKp6Dapwu4o3x_QSTgW4a5E8IdEWI",
-                                        description: "Token JWT gerado para autenticação."
-                                    },
-                                    usuario: {
-                                        type: "object",
-                                        properties: {
-                                            nome: { 
-                                                type: "string", 
-                                                example: "Alexandre Delira",
-                                                description: "Nome do usuário autenticado."
-                                            },
-                                            email: { 
-                                                type: "string", 
-                                                format: "email", 
-                                                example: "alx.delira@gmail.com",
-                                                description: "Email do usuário autenticado."
-                                            },
-                                            foto: { 
-                                                type: "string", 
-                                                format: "url", 
-                                                example: "https://example.com/foto.jpg",
-                                                description: "URL da foto de perfil do usuário, se cadastrada."
-                                            }
-                                        }
-                                    }
+                      "application/json": {
+                        schema: {
+                          type: "object",
+                          properties: {
+                            token: {
+                              type: "string",
+                              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                              description: "Token JWT gerado para autenticação."
+                            },
+                            usuario: {
+                              type: "object",
+                              properties: {
+                                nome: {
+                                  type: "string",
+                                  example: "Alexandre Delira",
+                                },
+                                email: {
+                                  type: "string",
+                                  format: "email",
+                                  example: "alx.delira@gmail.com",
+                                },
+                                foto: {
+                                  type: "string",
+                                  format: "binary",
+                                  example: "66c65949f2ad1387602faf4f",
+                                  description: "Id da foto do usuário."
                                 }
-                            }
-                        }
-                    }
-                },
+                              },
+                              required: ["nome", "email", "foto"]
+                            },
+                          },
+                          required: ["token", "usuario"]
+                        },
+                      },
+                    },
+                  },
                 400: {
                     description: "Usuário ou senha inválidos",
                     content: {

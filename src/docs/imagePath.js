@@ -1,5 +1,5 @@
 const imagePath = {
-    "/imagens": {
+    "/usuario/foto": {
         get: {
             tags: ["Imagens"],
             summary: "Lista todas as imagens",
@@ -427,9 +427,9 @@ const imagePath = {
                     },
                 },
             },
-        },
+        }       
     },
-    "/imagens/usuario/{id}": {
+    "/usuario/{id}/foto": {
         put: {
             tags: ["Imagens"],
             summary: "Atualiza a imagem de um usuário",
@@ -616,6 +616,7 @@ const imagePath = {
             },
         },
     },
+
 };
 
 export default imagePath;

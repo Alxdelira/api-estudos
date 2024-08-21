@@ -50,19 +50,22 @@ imagensRouter.use("/imagens", express.static("imagens"));
 
 // Rotas de imagem com middleware de autenticação
 imagensRouter
-    .route("/imagens")
+    .route("/usuario/foto")
     .post(authMiddleware, createStorageDirectory, upload.single("image"), ImagensControllers.enviarImagem)
     .get(ImagensControllers.listarImagens);
 
+// Corrigindo a rota para usar a barra inicial
 imagensRouter
     .route("/imagens/:id")
     .get(ImagensControllers.mostrarImagem) // Sem autenticação para visualizar imagens
-    .delete(authMiddleware, ImagensControllers.deletarImagem)
+    .delete(authMiddleware, ImagensControllers.deletarImagem);
 
+// Corrigindo a rota para usar a barra inicial
 imagensRouter
-    .route("/imagens/usuario/:id")
-    .put(authMiddleware,createStorageDirectory, upload.single("image"), ImagensControllers.atualizarImagem)
+    .route("/usuario/:id/foto")
+    .put(authMiddleware, createStorageDirectory, upload.single("image"), ImagensControllers.atualizarImagem);
 
 export default imagensRouter;
+
 
 

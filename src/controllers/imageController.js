@@ -78,23 +78,22 @@ class ImagensControllers {
     }
   }
   static async mostrarImagem(req, res, next) {
-    try {
-      const { id } = req.params;
-
-      // Encontre a imagem no banco de dados pelo ID
-      const imagem = await ImagemModel.findOne({ id_imagem: id });
+    try {  
+      // Encontre a imagem no banco de dados pelo _id
+      const imagem = await ImagemModel.findById(req.params.id);
+      console.log(imagem)
       if (!imagem) {
         return res.status(404).json({
           codigo: 404,
           mensagem: 'Imagem não encontrada',
         });
       }
-
+  
       // Converta o caminho armazenado em um caminho absoluto
       const caminhoImagem = path.resolve('imagens', path.basename(imagem.caminho.split('?')[0]));
-
+  
       console.log('Caminho da imagem:', caminhoImagem);
-
+  
       // Verifique se o arquivo realmente existe antes de tentar enviá-lo
       if (fs.existsSync(caminhoImagem)) {
         res.sendFile(caminhoImagem);
@@ -112,25 +111,26 @@ class ImagensControllers {
       });
     }
   }
+  
   static async deletarImagem(req, res, next) {
     try {
       const { id } = req.params;
-
-      // Encontre a imagem no banco de dados pelo ID da imagem
-      const imagem = await ImagemModel.findOne({ id_imagem: id });
+  
+      // Encontre a imagem no banco de dados pelo _id
+      const imagem = await ImagemModel.findById(id);
       if (!imagem) {
         return res.status(404).json({
           codigo: 404,
           mensagem: 'Imagem não encontrada',
         });
       }
-
+  
       // Remove o arquivo do sistema de arquivos
-      await unlinkAsync(path.join(getCurrentDir(), '..', 'imagens', `${imagem.id_imagem}.${imagem.tipo_arquivo}`));
-
+      await unlinkAsync(path.resolve('imagens', path.basename(imagem.caminho.split('?')[0])));
+  
       // Remove o registro da imagem no banco de dados
       await imagem.deleteOne();
-
+  
       return res.status(200).json({
         codigo: 200,
         mensagem: 'Imagem deletada com sucesso',
@@ -143,9 +143,10 @@ class ImagensControllers {
       });
     }
   }
+  
   static async listarImagens(req, res, next) {
     try {
-      const imagens = await ImagemModel.find();
+      const imagens = await ImagemModel.find().populate("enviado_por");
       if (!imagens.length) {
         return res.status(404).json({
           codigo: 404,

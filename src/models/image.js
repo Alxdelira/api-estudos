@@ -10,7 +10,7 @@ const imagemSchema = new mongoose.Schema(
     },
     enviado_por: {
       type: mongoose.Types.ObjectId,
-      ref: "usuarios",
+      ref: "Usuario",
     },
     caminho: {
       type: String,

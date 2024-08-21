@@ -1,6 +1,5 @@
 import usuarios from "./usuarioRouter.js"
 import login from "./loginRouter.js"
-import express from "express"
 import imagens from "./imageRouter.js";
 
 
