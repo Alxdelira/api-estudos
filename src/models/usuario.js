@@ -17,10 +17,7 @@ const UsuarioSchema = new mongoose.Schema(
       lowercase: true, // Converte o email para minúsculas
       match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'O email deve ser válido'], // Valida o formato do email
     },
-    foto: {
-      type: mongoose.Types.ObjectId,
-      ref: "Imagem", // Referência ao modelo de Imagem
-    },
+    foto: { type: mongoose.Schema.Types.ObjectId, ref: 'Imagem' },
     senha: {
       type: String,
       required: true, // Garante que a senha seja fornecida

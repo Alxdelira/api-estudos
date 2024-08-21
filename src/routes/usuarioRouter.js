@@ -16,7 +16,7 @@ router.get('/usuarios', authMiddleware, UsuarioController.listar);
  * @desc Cria um novo usuário
  * @access Private
  */
-router.post('/usuarios', authMiddleware, UsuarioController.criarUsuario);
+router.post('/usuarios', UsuarioController.criarUsuario);
 
 /**
  * @route GET /usuarios/:id

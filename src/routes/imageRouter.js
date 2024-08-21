@@ -51,7 +51,7 @@ imagensRouter.use("/imagens", express.static("imagens"));
 // Rotas de imagem com middleware de autenticação
 imagensRouter
     .route("/imagens")
-    .post(createStorageDirectory, upload.single("image"), ImagensControllers.enviarImagem)
+    .post(authMiddleware, createStorageDirectory, upload.single("image"), ImagensControllers.enviarImagem)
     .get(ImagensControllers.listarImagens);
 
 imagensRouter
